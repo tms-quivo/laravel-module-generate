@@ -1,0 +1,33 @@
+{
+    "name": "tomosia/laravel-module-generate",
+    "description": "Helps quickly generate common Laravel classes (like Controller, Request, etc.) via Artisan commands",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.1|^8.2",
+        "laravel/framework": "^10.0|^11.0",
+        "illuminate/console": "^10.0|^11.0",
+        "illuminate/support": "^10.0|^11.0",
+        "illuminate/filesystem": "^10.0|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tomosia\\LaravelModuleGenerate\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Qui Vo",
+            "email": "qui.vo@tomosia.com",
+            "role": "Developer"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Tomosia\\LaravelModuleGenerate\\LaravelModuleGenerateProvider"
+            ]
+        }
+    }
+}

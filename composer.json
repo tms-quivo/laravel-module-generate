@@ -15,7 +15,6 @@
             "Tomosia\\LaravelModuleGenerate\\": "src/"
         }
     },
-    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Qui Vo",
@@ -29,5 +28,7 @@
                 "Tomosia\\LaravelModuleGenerate\\LaravelModuleGenerateProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

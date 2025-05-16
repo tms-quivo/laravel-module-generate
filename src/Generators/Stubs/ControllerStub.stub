@@ -1,0 +1,13 @@
+<?php
+
+namespace Modules\{{ module }}\{{ controller_path }};
+
+use App\Http\Controllers\Controller;
+
+class {{ name }} extends Controller
+{
+    public function index()
+    {
+        //
+    }
+}

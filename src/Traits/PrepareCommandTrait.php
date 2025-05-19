@@ -1,6 +1,8 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Traits;
 
+use Illuminate\Support\Str;
+
 trait PrepareCommandTrait
 {
     /**
@@ -10,12 +12,29 @@ trait PrepareCommandTrait
      */
     protected function getClassNamespace(): string
     {
+        $path = config('module-generator.paths.' . strtolower($this->type));
+        $path = str($path)->append('\\' . $this->getSubNamespace())->chopEnd('\\')->toString();
+
         return sprintf(
             '%s\%s\%s',
             trim($this->rootNamespace(), '\\'),
             $this->option('module'),
-            config('module-generator.paths.' . strtolower($this->type))
+            $path
         );
+    }
+
+    /**
+     * Get the sub namespace for the given name.
+     *
+     * @return string
+     */
+    protected function getSubNamespace(): string
+    {
+        if (! Str::contains($this->argument('name'), '\\')) {
+            return '';
+        }
+
+        return str_replace('\\' . $this->getClassName(), '', $this->argument('name'));
     }
 
     /**
@@ -35,12 +54,12 @@ trait PrepareCommandTrait
      */
     protected function getClassName(): string
     {
-        return $this->argument('name');
+        return class_basename($this->argument('name'));
     }
 
     protected function replaceStub(string $stub): string
     {
-        $stub = $this->replaceGeneral($stub);
+        $stub = $this->replaceGeneral($stub, $this->getSubNamespace());
 
         return str_replace(
             [
@@ -49,7 +68,7 @@ trait PrepareCommandTrait
             ],
             [
                 $this->option('module'),
-                $this->argument('name'),
+                $this->getClassName(),
             ],
             $stub
         );

@@ -230,18 +230,21 @@ abstract class Generator extends Command
      * Replace the general variables for the given stub.
      *
      * @param string $stub
+     * @param string|null $subFolder
      * @return string
      */
-    public function replaceGeneral(string $stub): string
+    public function replaceGeneral(string $stub, ?string $subFolder = null): string
     {
+        $type = strtolower($this->type);
+        $pathConfig = config("module-generator.paths.{$type}");
+        $replace = str($pathConfig)->append('\\' . $subFolder)->chopEnd('\\')->toString();
+        
         return str_replace(
             [
-                '{{ request_path }}',
-                '{{ controller_path }}',
+                sprintf("{{ %s_path }}", $type),
             ],
             [
-                config('module-generator.paths.request'),
-                config('module-generator.paths.controller'),
+                $replace,
             ],
             $stub
         );
@@ -284,6 +287,7 @@ abstract class Generator extends Command
         $name = $namespace . '\\' . $name;
 
         $path = $this->getPath($name);
+
         // Next, We will check to see if the class already exists. If it does, we don't want
         // to create the class and overwrite the user's code. So, we will bail out so the
         // code is untouched. Otherwise, we will continue generating this class' files.

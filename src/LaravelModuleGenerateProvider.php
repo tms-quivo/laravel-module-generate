@@ -3,6 +3,7 @@ namespace Tomosia\LaravelModuleGenerate;
 
 use Illuminate\Support\ServiceProvider;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ControllerGeneratorCommand;
+use Tomosia\LaravelModuleGenerate\Generators\Commands\ModelGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\RequestGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ResourceGeneratorCommand;
 
@@ -24,6 +25,7 @@ class LaravelModuleGenerateProvider extends ServiceProvider
                 ControllerGeneratorCommand::class,
                 RequestGeneratorCommand::class,
                 ResourceGeneratorCommand::class,
+                ModelGeneratorCommand::class,
             ]);
         }
     }

@@ -9,7 +9,7 @@ class RequestGeneratorCommand extends Generator
 {
     use PrepareCommandTrait;
 
-    protected $signature = 'm:make:request {name} {--module= : The name of the module}';
+    protected $signature = 'module:make-request {name} {--module= : The name of the module}';
 
     protected $description = 'Create a new request class';
 

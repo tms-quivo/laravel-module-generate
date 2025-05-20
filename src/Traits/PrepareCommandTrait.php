@@ -57,6 +57,12 @@ trait PrepareCommandTrait
         return class_basename($this->argument('name'));
     }
 
+    /**
+     * Replace the stub.
+     *
+     * @param string $stub
+     * @return string
+     */
     protected function replaceStub(string $stub): string
     {
         $stub = $this->replaceGeneral($stub, $this->getSubNamespace());

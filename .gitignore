@@ -30,3 +30,5 @@ Homestead.json
 auth.json
 
 .DS_Store
+
+composer.lock

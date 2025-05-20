@@ -1,5 +1,5 @@
 {
-    "name": "tomosia/laravel-module-generate",
+    "name": "tomosia-module/laravel-module-generate",
     "description": "Helps quickly generate common Laravel classes (like Controller, Request, etc.) via Artisan commands",
     "type": "library",
     "license": "MIT",

@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Containers\{{ container }}\{{ model_path }};
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class {{ name }} extends Model
+{
+    use HasFactory;
+
+    {{ table }}
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        {{ fillable }}
+    ];
+}

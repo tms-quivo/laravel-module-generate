@@ -1,35 +1,22 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
+use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Facades\Schema;
-use Symfony\Component\Console\Command\Command;
-use Tomosia\LaravelModuleGenerate\Generators\Generator;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareContainerCommandTrait;
 
-class ModelGeneratorCommand extends Generator
+#[AsCommand(name: 'module:make-model', description: 'Generate a new model class')]
+class ModelGeneratorCommand extends GeneratorCommand
 {
     use PrepareContainerCommandTrait;
-
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'module:make-model {name} {--container= : The name of the container} {--table= : The name of the table}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Create a new model';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected string $type = 'Model';
+    protected $type = 'Model';
 
     /**
      * The name of the table.
@@ -43,19 +30,25 @@ class ModelGeneratorCommand extends Generator
      */
     public function handle()
     {
-        if (! $this->option('container')) {
-            $this->error('The --container option is required.');
-
-            return Command::FAILURE;
-        }
+        $this->prepareOptions();
         $this->prepareModel();
+        
+        parent::handle();
+        // Run Pint
+        exec(base_path('vendor/bin/pint') . " {$this->filePath}");
+    }
 
-        $this->generateFile(
-            $this->getClassName(),
-            $this->getClassNamespace(),
-            $this->getStub(),
-            'replaceStub'
-        );
+    /**
+     * Build the class with the given name.
+     *
+     * @param string $name
+     * @return string
+     */
+    protected function buildClass($name)
+    {
+        $stub = parent::buildClass($name);
+
+        return $this->replaceStub($stub);
     }
 
     /**
@@ -96,18 +89,12 @@ class ModelGeneratorCommand extends Generator
      */
     protected function replaceStub(string $stub): string
     {
-        $stub = $this->replaceGeneral($stub, $this->getSubNamespace());
-
         return str_replace(
             [
-                '{{ container }}',
-                '{{ name }}',
                 '{{ table }}',
                 '{{ fillable }}',
             ],
             [
-                $this->option('container'),
-                $this->getClassName(),
                 $this->getTableName(),
                 $this->getFillableFromMigration($this->table),
             ],

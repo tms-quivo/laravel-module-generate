@@ -1,33 +1,29 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
-use Symfony\Component\Console\Command\Command;
-use Tomosia\LaravelModuleGenerate\Generators\Generator;
+use Illuminate\Console\GeneratorCommand;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
-class RequestGeneratorCommand extends Generator
+#[AsCommand(name: 'module:make-request', description: 'Generate a new request class')]
+class RequestGeneratorCommand extends GeneratorCommand
 {
     use PrepareCommandTrait;
 
-    protected $signature = 'module:make-request {name} {--module= : The name of the module}';
+    /**
+     * The type of class being generated.
+     *
+     * @var string
+     */
+    protected $type = 'Request';
 
-    protected $description = 'Create a new request class';
-
-    protected string $type = 'Request';
-
+    /**
+     * Execute the console command.
+     */
     public function handle()
     {
-        if (! $this->option('module')) {
-            $this->error('The --module option is required.');
+        $this->prepareOptions();
 
-            return Command::FAILURE;
-        }
-
-        $this->generateFile(
-            $this->getClassName(),
-            $this->getClassNamespace(),
-            $this->getStub(),
-            'replaceStub'
-        );
+        parent::handle();
     }
 }

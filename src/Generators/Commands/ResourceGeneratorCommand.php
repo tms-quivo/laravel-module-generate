@@ -1,56 +1,44 @@
 <?php
-
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
-use Symfony\Component\Console\Command\Command;
-use Tomosia\LaravelModuleGenerate\Generators\Generator;
+use Illuminate\Console\GeneratorCommand;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
-class ResourceGeneratorCommand extends Generator
+#[AsCommand(name: 'module:make-resource', description: 'Generate a new resource class')]
+class ResourceGeneratorCommand extends GeneratorCommand
 {
-	use PrepareCommandTrait;
+    use PrepareCommandTrait;
 
-	/**
-	 * The name and signature of the console command.
-	 *
-	 * @var string
-	 */
-	protected $signature = 'module:make-resource {name} {--module= : The name of the module} {--collection}';
+    /**
+     * The type of class being generated.
+     *
+     * @var string
+     */
+    protected $type = 'Resource';
 
-	/**
-	 * The console command description.
-	 *
-	 * @var string
-	 */
-	protected $description = 'Create a new resource';
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
+        $this->prepareOptions();
+        $this->prepareResource();
 
-	/**
-	 * The type of class being generated.
-	 *
-	 * @var string
-	 */
-	protected string $type = 'Resource';
+        parent::handle();
+    }
 
-	/**
-	 * Execute the console command.
-	 */
-	public function handle()
-	{
-		if (! $this->option('module')) {
-            $this->error('The --module option is required.');
-
-            return Command::FAILURE;
+    /**
+     * Prepare options.
+     *
+     * @return static
+     */
+    protected function prepareResource()
+    {
+        if ($this->option('collection')) {
+            $this->type = "{$this->type} collection";
         }
 
-		if ($this->option('collection')) {
-			$this->type = "{$this->type}Collection";
-		}
-  
-		$this->generateFile(
-            $this->getClassName(),
-            $this->getClassNamespace(),
-            $this->getStub(),
-            'replaceStub'
-        );
-	}
+        return $this;
+    }
 }

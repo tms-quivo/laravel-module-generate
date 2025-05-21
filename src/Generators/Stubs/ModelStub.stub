@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Containers\{{ container }}\{{ model_path }};
+namespace {{ namespace }};
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class {{ name }} extends Model
+class {{ class }} extends Model
 {
     use HasFactory;
 

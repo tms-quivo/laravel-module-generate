@@ -12,7 +12,7 @@ trait PrepareContainerCommandTrait
 	 */
 	protected function rootNamespace(): string
 	{
-		return "App\\Containers\\";
+		return sprintf("%s\\", config('module-generator.container_namespace'));
 	}
 
     /**

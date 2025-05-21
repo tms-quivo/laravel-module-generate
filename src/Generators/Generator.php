@@ -141,7 +141,7 @@ abstract class Generator extends Command
      */
     protected function rootNamespace(): string
     {
-        return "Modules\\";
+        return sprintf("%s\\", config('module-generator.module_namespace'));
     }
 
     /**

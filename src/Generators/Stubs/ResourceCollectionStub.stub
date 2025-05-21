@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\{{ module }}\{{ resource_collection_path }};
+namespace {{ namespace }};
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class {{ name }} extends ResourceCollection
+class {{ class }} extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.

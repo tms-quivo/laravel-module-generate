@@ -3,19 +3,19 @@ namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
+use Tomosia\LaravelModuleGenerate\Traits\PrepareContainerCommandTrait;
 
-#[AsCommand(name: 'module:make-controller', description: 'Generate a new controller class')]
-class ControllerGeneratorCommand extends GeneratorCommand
+#[AsCommand(name: 'module:make-action', description: 'Generate a new action class')]
+class ActionGeneratorCommand extends GeneratorCommand
 {
-    use PrepareCommandTrait;
+    use PrepareContainerCommandTrait;
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Controller';
+    protected $type = 'Action';
 
     public function handle()
     {

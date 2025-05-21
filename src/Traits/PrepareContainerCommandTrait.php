@@ -1,19 +1,101 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Traits;
 
+use function Laravel\Prompts\text;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\InputOption;
 
 trait PrepareContainerCommandTrait
 {
-	/**
-	 * Get the root namespace for the class.
-	 *
-	 * @return string
-	 */
-	protected function rootNamespace(): string
-	{
-		return sprintf("%s\\", config('module-generator.container_namespace'));
-	}
+    /**
+     * The path of class generated.
+     *
+     * @var string
+     */
+    protected string $filePath;
+
+    /**
+     * Prepare options.
+     *
+     * @return void
+     */
+    protected function prepareOptions()
+    {
+        if (! $this->option('container')) {
+            $name = text('Please enter the name of the container', required: true);
+
+            $this->input->setOption('container', $name);
+        }
+    }
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions(): array
+    {
+        return array_merge(
+            [
+                ['container', 'c', InputOption::VALUE_REQUIRED, 'The name of the container'],
+                ['table', 'tb', InputOption::VALUE_OPTIONAL, 'The table name'],
+            ],
+            parent::getOptions(),
+        );
+    }
+
+    /**
+     * Get the root namespace for the class.
+     *
+     * @return string
+     */
+    protected function rootNamespace(): string
+    {
+        return sprintf("%s\\", config('module-generator.container_namespace'));
+    }
+
+    /**
+     * Get the destination class path.
+     *
+     * @param string $name
+     * @return string
+     */
+    protected function getPath($name): string
+    {
+        $this->filePath = $this->laravel->basePath() . '/' . str_replace('\\', '/', $name) . '.php';
+
+        return $this->filePath;
+    }
+
+    /**
+     * Get the snake case type.
+     *
+     * @return string
+     */
+    protected function getSnakeType(): string
+    {
+        return str($this->type)->snake()->toString();
+    }
+
+    protected function getConfigPath(): string
+    {
+        return config("module-generator.paths.{$this->getSnakeType()}");
+    }
+
+    /**
+     * Get the default namespace for the class.
+     *
+     * @param string $rootNamespace
+     * @return string
+     */
+    protected function getDefaultNamespace($rootNamespace): string
+    {
+        if (null !== $this->option('container')) {
+            return sprintf('%s\\%s\\%s', $rootNamespace, $this->option('container'), $this->getConfigPath());
+        }
+
+        return sprintf('%s\\%s', $rootNamespace, $this->getConfigPath());
+    }
 
     /**
      * Get the namespace for the given name.
@@ -22,7 +104,7 @@ trait PrepareContainerCommandTrait
      */
     protected function getClassNamespace(): string
     {
-        $path = $this->getConfigPathByType();
+        $path = $this->getConfigPath();
         $path = str($path)->append('\\' . $this->getSubNamespace())->chopEnd('\\')->toString();
 
         return sprintf(
@@ -33,6 +115,11 @@ trait PrepareContainerCommandTrait
         );
     }
 
+    /**
+     * Get the namespace for the given name.
+     *
+     * @return string
+     */
     protected function getSubNamespace(): string
     {
         if (! Str::contains($this->argument('name'), '\\')) {
@@ -49,7 +136,7 @@ trait PrepareContainerCommandTrait
      */
     protected function getStub(): string
     {
-        return __DIR__ . '/../Generators/Stubs/' . ucfirst($this->type) . 'Stub.stub';
+        return __DIR__ . '/../Generators/Stubs/' . str($this->type)->studly()->toString() . 'Stub.stub';
     }
 
     /**
@@ -62,12 +149,12 @@ trait PrepareContainerCommandTrait
         return class_basename($this->argument('name'));
     }
 
-	/**
-	 * Replace the stub variables for the generator.
-	 * 
-	 * @param string $stub
-	 * @return string
-	 */
+    /**
+     * Replace the stub variables for the generator.
+     *
+     * @param string $stub
+     * @return string
+     */
     protected function replaceStub(string $stub): string
     {
         $stub = $this->replaceGeneral($stub, $this->getSubNamespace());

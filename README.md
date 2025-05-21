@@ -34,6 +34,9 @@ This command will create a new request file at `Modules/User/Http/Request/LoginR
 
 - `module:make-controller` - Generate a new controller in the module
 - `module:make-request` - Generate a new request in the module
+- `module:make-action` - Generate a new action in the module
+- `module:make-resource` - Generate a new resource in the module
+- `module:make-model` - Generate a new model in the module
 
 ## Features
 

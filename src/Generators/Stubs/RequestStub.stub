@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\{{ module }}\{{ request_path }};
+namespace {{ namespace }};
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class {{ name }} extends FormRequest
+class {{ class }} extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -12,9 +12,9 @@ class {{ name }} extends FormRequest
 	 * @return bool
 	 */
 	public function authorize(): bool
-	{
-		return true;
-	}
+    {
+        return true;
+    }
 
 	/**
 	 * Get the validation rules that apply to the request.

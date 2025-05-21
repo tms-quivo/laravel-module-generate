@@ -141,7 +141,27 @@ abstract class Generator extends Command
      */
     protected function rootNamespace(): string
     {
-        return "Modules\\";
+        return sprintf("%s\\", config('module-generator.module_namespace'));
+    }
+
+    /**
+     * Get the snake case type.
+     *
+     * @return string
+     */
+    protected function getSnakeType(): string
+    {
+        return str($this->type)->snake()->toString();
+    }
+
+    /**
+     * Get the config path by type.
+     *
+     * @return string
+     */
+    protected function getConfigPathByType(): string
+    {
+        return config("module-generator.paths.{$this->getSnakeType()}");
     }
 
     /**
@@ -235,10 +255,10 @@ abstract class Generator extends Command
      */
     public function replaceGeneral(string $stub, ?string $subFolder = null): string
     {
-        $type = strtolower($this->type);
-        $pathConfig = config("module-generator.paths.{$type}");
+        $type = $this->getSnakeType();
+        $pathConfig = $this->getConfigPathByType();
         $replace = str($pathConfig)->append('\\' . $subFolder)->chopEnd('\\')->toString();
-        
+
         return str_replace(
             [
                 sprintf("{{ %s_path }}", $type),
@@ -307,6 +327,9 @@ abstract class Generator extends Command
         // Build class
         $stub = $this->files->get($stubPath);
         $this->files->put($path, $this->sortImports($this->{$replaceNamespaceFunc}($stub, $name)));
+
+        // Format file with Pint
+        exec(base_path('vendor/bin/pint') . " {$path}");
 
         $info = $this->type;
 

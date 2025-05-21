@@ -5,7 +5,7 @@ use function Laravel\Prompts\text;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 
-trait PrepareCommandTrait
+trait PrepareContainerCommandTrait
 {
     /**
      * The path of class generated.
@@ -21,10 +21,10 @@ trait PrepareCommandTrait
      */
     protected function prepareOptions()
     {
-        if (! $this->option('module')) {
-            $name = text('Please enter the name of the module', required: true);
+        if (! $this->option('container')) {
+            $name = text('Please enter the name of the container', required: true);
 
-            $this->input->setOption('module', $name);
+            $this->input->setOption('container', $name);
         }
     }
 
@@ -37,8 +37,8 @@ trait PrepareCommandTrait
     {
         return array_merge(
             [
-                ['module', 'm', InputOption::VALUE_REQUIRED, 'The name of the module'],
-                ['collection', 'cl', InputOption::VALUE_NONE, 'The resource collection'],
+                ['container', 'c', InputOption::VALUE_REQUIRED, 'The name of the container'],
+                ['table', 'tb', InputOption::VALUE_OPTIONAL, 'The table name'],
             ],
             parent::getOptions(),
         );
@@ -51,7 +51,7 @@ trait PrepareCommandTrait
      */
     protected function rootNamespace(): string
     {
-        return sprintf("%s\\", config('module-generator.module_namespace'));
+        return sprintf("%s\\", config('module-generator.container_namespace'));
     }
 
     /**
@@ -90,8 +90,8 @@ trait PrepareCommandTrait
      */
     protected function getDefaultNamespace($rootNamespace): string
     {
-        if (null !== $this->option('module')) {
-            return sprintf('%s\\%s\\%s', $rootNamespace, $this->option('module'), $this->getConfigPath());
+        if (null !== $this->option('container')) {
+            return sprintf('%s\\%s\\%s', $rootNamespace, $this->option('container'), $this->getConfigPath());
         }
 
         return sprintf('%s\\%s', $rootNamespace, $this->getConfigPath());
@@ -110,7 +110,7 @@ trait PrepareCommandTrait
         return sprintf(
             '%s\%s\%s',
             trim($this->rootNamespace(), '\\'),
-            $this->option('module'),
+            $this->option('container'),
             $path
         );
     }
@@ -161,11 +161,11 @@ trait PrepareCommandTrait
 
         return str_replace(
             [
-                '{{ module }}',
+                '{{ container }}',
                 '{{ name }}',
             ],
             [
-                $this->option('module'),
+                $this->option('container'),
                 $this->getClassName(),
             ],
             $stub

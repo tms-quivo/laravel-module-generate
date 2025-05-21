@@ -5,8 +5,8 @@ use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
-#[AsCommand(name: 'module:make-request', description: 'Generate a new request class')]
-class RequestGeneratorCommand extends GeneratorCommand
+#[AsCommand(name: 'module:make-resource', description: 'Generate a new resource class')]
+class ResourceGeneratorCommand extends GeneratorCommand
 {
     use PrepareCommandTrait;
 
@@ -15,7 +15,7 @@ class RequestGeneratorCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $type = 'Request';
+    protected $type = 'Resource';
 
     /**
      * Execute the console command.
@@ -23,7 +23,22 @@ class RequestGeneratorCommand extends GeneratorCommand
     public function handle()
     {
         $this->prepareOptions();
+        $this->prepareResource();
 
         parent::handle();
+    }
+
+    /**
+     * Prepare options.
+     *
+     * @return static
+     */
+    protected function prepareResource()
+    {
+        if ($this->option('collection')) {
+            $this->type = "{$this->type} collection";
+        }
+
+        return $this;
     }
 }

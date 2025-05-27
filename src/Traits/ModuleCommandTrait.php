@@ -30,6 +30,7 @@ trait ModuleCommandTrait
             [
                 ['module', 'mdl', InputOption::VALUE_OPTIONAL, 'The name of the module'],
                 ['container', 'ctn', InputOption::VALUE_OPTIONAL, 'The name of the container'],
+                ['provider', 'mp', InputOption::VALUE_OPTIONAL, 'The options of the module'],
             ],
             parent::getOptions(),
         );

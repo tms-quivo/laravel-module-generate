@@ -13,7 +13,10 @@
     "autoload": {
         "psr-4": {
             "Tomosia\\LaravelModuleGenerate\\": "src/"
-        }
+        },
+        "files": [
+            "src/Helpers/Helper.php"
+        ]
     },
     "authors": [
         {

@@ -1,28 +1,30 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
-use Illuminate\Foundation\Console\RequestMakeCommand;
-use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;
+use Illuminate\Foundation\Console\ObserverMakeCommand;
+use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
+use Tomosia\LaravelModuleGenerate\Traits\PrepareModelTrait;
 
-class RequestGeneratorCommand extends RequestMakeCommand
+class ObserverGeneratorCommand extends ObserverMakeCommand
 {
     use PrepareCommandTrait;
-    use ModuleCommandTrait;
+    use ContainerCommandTrait;
+    use PrepareModelTrait;
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'module:make-request';
+    protected $name = 'module:make-observer';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate a new request class for provided module';
+    protected $description = 'Generate a new observer class for provided container';
 
     /**
      * Execute the console command.

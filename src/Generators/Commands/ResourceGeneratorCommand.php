@@ -1,21 +1,28 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
-use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Attribute\AsCommand;
+use Illuminate\Foundation\Console\ResourceMakeCommand;
+use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
-#[AsCommand(name: 'module:make-resource', description: 'Generate a new resource class')]
-class ResourceGeneratorCommand extends GeneratorCommand
+class ResourceGeneratorCommand extends ResourceMakeCommand
 {
     use PrepareCommandTrait;
+    use ModuleCommandTrait;
 
     /**
-     * The type of class being generated.
+     * The name and signature of the console command.
      *
      * @var string
      */
-    protected $type = 'Resource';
+    protected $name = 'module:make-resource';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Generate a new resource class for provided module';
 
     /**
      * Execute the console command.
@@ -23,22 +30,7 @@ class ResourceGeneratorCommand extends GeneratorCommand
     public function handle()
     {
         $this->prepareOptions();
-        $this->prepareResource();
 
         parent::handle();
-    }
-
-    /**
-     * Prepare options.
-     *
-     * @return static
-     */
-    protected function prepareResource()
-    {
-        if ($this->option('collection')) {
-            $this->type = "{$this->type} collection";
-        }
-
-        return $this;
     }
 }

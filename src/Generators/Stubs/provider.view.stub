@@ -1,0 +1,17 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
+
+class {{ class }} extends ServiceProvider
+{
+    /**
+     * Bootstrap services.
+     */
+    public function boot(): void
+    {
+        Blade::componentNamespace('Modules\\{{ path }}\\View\\Components', '{{ alias }}');
+    }
+}

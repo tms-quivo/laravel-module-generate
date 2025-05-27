@@ -1,22 +1,31 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
-use Illuminate\Console\GeneratorCommand;
+use Illuminate\Foundation\Console\ModelMakeCommand;
 use Illuminate\Support\Facades\Schema;
-use Symfony\Component\Console\Attribute\AsCommand;
-use Tomosia\LaravelModuleGenerate\Traits\PrepareContainerCommandTrait;
+use Illuminate\Support\Str;
+use Symfony\Component\Console\Command\Command;
+use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
+use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
-#[AsCommand(name: 'module:make-model', description: 'Generate a new model class')]
-class ModelGeneratorCommand extends GeneratorCommand
+class ModelGeneratorCommand extends ModelMakeCommand
 {
-    use PrepareContainerCommandTrait;
+    use PrepareCommandTrait;
+    use ContainerCommandTrait;
 
     /**
-     * The type of class being generated.
+     * The name and signature of the console command.
      *
      * @var string
      */
-    protected $type = 'Model';
+    protected $name = 'module:make-model';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Generate a new model class for provided container';
 
     /**
      * The name of the table.
@@ -26,16 +35,33 @@ class ModelGeneratorCommand extends GeneratorCommand
     protected string $table = '';
 
     /**
+     * Default excluded columns from fillable.
+     */
+    protected array $excludedColumns = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->prepareOptions();
-        $this->prepareModel();
-        
-        parent::handle();
-        // Run Pint
-        exec(base_path('vendor/bin/pint') . " {$this->filePath}");
+        try {
+            $this->prepareOptions();
+            $this->prepareModel();
+
+            parent::handle();
+
+            // Run Pint for code formatting
+            $this->formatCodeWithPint();
+        } catch (\Exception $e) {
+            $this->error("Error generating model: {$e->getMessage()}");
+
+            return Command::FAILURE;
+        }
     }
 
     /**
@@ -56,13 +82,11 @@ class ModelGeneratorCommand extends GeneratorCommand
      */
     protected function prepareModel()
     {
-        if ($this->option('table')) {
-            $this->table = $this->option('table');
-
-            return $this;
-        }
-
-        $this->table = str($this->argument('name'))->snake()->plural()->toString();
+        $this->table = $this->option('table')
+        ?: Str::of(class_basename($this->argument('name')))
+            ->snake()
+            ->plural()
+            ->toString();
 
         return $this;
     }
@@ -74,11 +98,9 @@ class ModelGeneratorCommand extends GeneratorCommand
      */
     protected function getTableName(): ?string
     {
-        if ($this->option('table')) {
-            return sprintf("    protected \$table = '%s';", $this->option('table'));
-        }
-
-        return null;
+        return $this->option('table')
+            ? sprintf("    protected \$table = '%s';", $this->option('table'))
+            : null;
     }
 
     /**
@@ -110,16 +132,47 @@ class ModelGeneratorCommand extends GeneratorCommand
      */
     protected function getFillableFromMigration(string $name): string
     {
+        if (! Schema::hasTable($name)) {
+            return '';
+        }
+
         $columns = Schema::getColumnListing($name);
 
         return collect($columns)
-            ->diff([
-                'id',
-                'created_at',
-                'updated_at',
-                'deleted_at',
-            ])
+            ->diff($this->excludedColumns)
             ->map(fn($col) => "        '{$col}',")
             ->implode("\n");
+    }
+
+    protected function createController()
+    {
+        $controller = Str::of(class_basename($this->argument('name')))
+            ->studly()
+            ->append('Controller')
+            ->toString();
+        $modelName         = $this->qualifyClass($this->getNameInput());
+        $shouldCreateModel = $this->option('resource') || $this->option('api');
+
+        $this->call('module:make-controller', [
+            'name'       => $controller,
+            '--model'    => $shouldCreateModel ? $modelName : null,
+            '--module'   => $this->option('module'),
+            '--api'      => $this->option('api'),
+            '--requests' => $this->option('requests') || $this->option('all'),
+        ]);
+    }
+
+    protected function createPolicy()
+    {
+        $policy = Str::of(class_basename($this->argument('name')))
+            ->studly()
+            ->append('Policy')
+            ->toString();
+
+        $this->call('module:make-policy', [
+            'name'        => $policy,
+            '--model'     => $this->qualifyClass($this->getNameInput()),
+            '--container' => $this->option('container'),
+        ]);
     }
 }

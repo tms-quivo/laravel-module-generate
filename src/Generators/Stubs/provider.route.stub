@@ -1,0 +1,42 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+
+class {{ class }} extends ServiceProvider
+{
+    /**
+     * @return void
+     */
+    public function map(): void
+    {
+        $this->mapRoutes();
+    }
+
+    /**
+     * @return void
+     */
+    protected function mapRoutes(): void
+    {
+        $routeConfig = [
+            'as' => '{{ alias }}.',
+            'middleware' => ['web']
+        ];
+
+        Route::group($routeConfig, function () {
+            includeRouteFiles(__DIR__ . '/../routes/');
+        });
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        Route::pattern('id', '[0-9]+');
+    }
+}

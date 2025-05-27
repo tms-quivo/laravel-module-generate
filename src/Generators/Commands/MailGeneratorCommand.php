@@ -1,28 +1,35 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
-use Illuminate\Foundation\Console\RequestMakeCommand;
-use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;
+use Illuminate\Foundation\Console\MailMakeCommand;
+use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
-class RequestGeneratorCommand extends RequestMakeCommand
+class MailGeneratorCommand extends MailMakeCommand
 {
     use PrepareCommandTrait;
-    use ModuleCommandTrait;
+    use ContainerCommandTrait;
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'module:make-request';
+    protected $name = 'module:make-mail';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate a new request class for provided module';
+    protected $description = 'Generate a new mail class for provided container';
+
+    /**
+     * The type of class being generated.
+     *
+     * @var string
+     */
+    protected $type = 'Mail';
 
     /**
      * Execute the console command.

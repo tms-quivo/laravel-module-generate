@@ -1,28 +1,28 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
-use Illuminate\Foundation\Console\RequestMakeCommand;
-use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;
+use Illuminate\Foundation\Console\NotificationMakeCommand;
+use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
-class RequestGeneratorCommand extends RequestMakeCommand
+class NotificationGeneratorCommand extends NotificationMakeCommand
 {
     use PrepareCommandTrait;
-    use ModuleCommandTrait;
+    use ContainerCommandTrait;
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'module:make-request';
+    protected $name = 'module:make-notification';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate a new request class for provided module';
+    protected $description = 'Generate a new notification class for provided container';
 
     /**
      * Execute the console command.

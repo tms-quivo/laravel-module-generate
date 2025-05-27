@@ -15,5 +15,36 @@ return [
 		'resource' => 'Transformers',
 		'resource_collection' => 'Transformers',
 		'model' => 'Models',
-	]
+		'action' => 'Actions',
+		'policy' => 'Policies',
+		'observer' => 'Observers',
+		'scope' => 'Scopes',
+		'event' => 'Events',
+		'listener' => 'Listeners',
+		'mail' => 'Mail',
+		'notification' => 'Notifications',
+		'job' => 'Jobs',
+		'repository' => 'Repositories',
+		'provider' => 'Providers',
+	],
+
+	'c_scaffold_folders' => [
+		'Actions',
+        'Models',
+        'Repositories',
+        'Observers',
+        'Events',
+        'Listeners',
+        'Jobs',
+	],
+
+	'm_scaffold_folders' => [
+		'Http\Controllers',
+		'Http\Requests',
+		'Providers',
+		'resources\assets',
+		'resources\lang',
+		'resources\views',
+		'routes'
+	],
 ];

@@ -1,0 +1,17 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Repositories\BaseRepository;
+use {{ modelNamespace }};
+
+class {{ class }} extends BaseRepository
+{
+    /**
+     * @return string
+     */
+    public function model(): string
+    {
+        return {{ model }}::class;
+    }
+}

@@ -2,10 +2,11 @@
 namespace Tomosia\LaravelModuleGenerate\Generators;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
-class CreateContainerCommand extends Command
+class CreateContainerCommand extends Command implements PromptsForMissingInput
 {
     /**
      * The name and signature of the console command.

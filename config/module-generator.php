@@ -47,4 +47,14 @@ return [
 		'resources\views',
 		'routes'
 	],
+
+	'stubs' => [
+		'gitkeep' => true,
+	],
+
+	'livewire' => [
+		'namespace' => 'Livewire',
+
+		'view' => 'resources/views/livewire',
+	]
 ];

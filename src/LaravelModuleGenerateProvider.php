@@ -1,6 +1,7 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate;
 
+use App\Console\Commands\Generators\LivewireGeneratorCommand;
 use Illuminate\Support\ServiceProvider;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ActionGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ChannelGeneratorCommand;
@@ -67,6 +68,7 @@ class LaravelModuleGenerateProvider extends ServiceProvider
             ChannelGeneratorCommand::class,
             RepositoryGeneratorCommand::class,
             ProviderGeneratorCommand::class,
+            LivewireGeneratorCommand::class,
         ];
     }
 

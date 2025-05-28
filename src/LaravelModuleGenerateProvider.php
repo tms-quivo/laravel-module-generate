@@ -1,7 +1,6 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate;
 
-use App\Console\Commands\Generators\LivewireGeneratorCommand;
 use Illuminate\Support\ServiceProvider;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ActionGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ChannelGeneratorCommand;
@@ -9,6 +8,7 @@ use Tomosia\LaravelModuleGenerate\Generators\Commands\ControllerGeneratorCommand
 use Tomosia\LaravelModuleGenerate\Generators\Commands\EventGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\JobGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ListenerGeneratorCommand;
+use Tomosia\LaravelModuleGenerate\Generators\Commands\LivewireGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\MailGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ModelGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\NotificationGeneratorCommand;

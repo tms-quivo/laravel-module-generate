@@ -1,5 +1,5 @@
 <?php
-namespace App\Console\Commands\Generators;
+namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
 use Tomosia\LaravelModuleGenerate\Traits\ComponentParserTrait;
 use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;

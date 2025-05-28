@@ -30,7 +30,7 @@ trait PrepareCommandTrait
      */
     protected function getStub(): string
     {
-        $stub = __DIR__ . '/../Generators/Stubs/' . str($this->type)->snake('-')->lower()->toString() . '.stub';
+        $stub = __DIR__ . '/../Generators/stubs/' . str($this->type)->snake('-')->lower()->toString() . '.stub';
         if (file_exists($stub)) {
             return $stub;
         }

@@ -2,9 +2,10 @@
 namespace Tomosia\LaravelModuleGenerate\Generators;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Support\Facades\File;
 
-class CreateModuleCommand extends Command
+class CreateModuleCommand extends Command implements PromptsForMissingInput
 {
     /**
      * The name and signature of the console command.
@@ -139,7 +140,7 @@ class CreateModuleCommand extends Command
     protected function createRouteFile(string $modulePath): void
     {
         $routePath = $modulePath . '/routes/web.php';
-        $stubPath = __DIR__ . '/Stubs/route.stub';
+        $stubPath = __DIR__ . '/stubs/route.stub';
 
         if (file_exists($stubPath)) {
             File::ensureDirectoryExists(dirname($routePath));
@@ -162,7 +163,7 @@ class CreateModuleCommand extends Command
         ];
 
         foreach ($providers as $key => $provider) {
-            $this->call('module:make-provider', [
+            $this->callSilent('module:make-provider', [
                 'name' => $provider,
                 '--module' => $moduleName,
                 '--provider' => $key,

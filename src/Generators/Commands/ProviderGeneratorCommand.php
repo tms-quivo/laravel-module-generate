@@ -43,7 +43,7 @@ class ProviderGeneratorCommand extends ProviderMakeCommand
             default => 'provider'
         };
 
-        $stub = __DIR__ . '/../Stubs/' . str($name)->snake('-')->lower()->toString() . '.stub';
+        $stub = __DIR__ . '/../stubs/' . str($name)->snake('-')->lower()->toString() . '.stub';
 
         if (file_exists($stub)) {
             return $stub;

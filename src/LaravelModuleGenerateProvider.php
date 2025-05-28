@@ -20,6 +20,7 @@ use Tomosia\LaravelModuleGenerate\Generators\Commands\ResourceGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ScopeGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\CreateContainerCommand;
 use Tomosia\LaravelModuleGenerate\Generators\CreateModuleCommand;
+use Tomosia\LaravelModuleGenerate\Providers\LivewireComponentServiceProvider;
 
 class LaravelModuleGenerateProvider extends ServiceProvider
 {
@@ -35,8 +36,14 @@ class LaravelModuleGenerateProvider extends ServiceProvider
                 __DIR__ . '/../config/module-generator.php' => config_path('module-generator.php'),
             ], 'module-generator');
 
+            $this->publishes([
+                __DIR__ . '/../scripts/vite-module-loader.js' => base_path('vite-module-loader.js'),
+            ], 'vite-module');
+
             $this->commands($this->registeredCommands());
         }
+
+        $this->registerProviders();
     }
 
     public function registeredCommands(): array
@@ -61,5 +68,10 @@ class LaravelModuleGenerateProvider extends ServiceProvider
             RepositoryGeneratorCommand::class,
             ProviderGeneratorCommand::class,
         ];
+    }
+
+    public function registerProviders()
+    {
+        $this->app->register(LivewireComponentServiceProvider::class);
     }
 }

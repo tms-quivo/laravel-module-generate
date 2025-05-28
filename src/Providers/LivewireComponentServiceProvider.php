@@ -29,6 +29,10 @@ class LivewireComponentServiceProvider extends ServiceProvider
     {
         $config = $this->getModuleConfig();
 
+        if (! File::isDirectory($config['modulePath'])) {
+            return;
+        }
+
         collect(File::directories($config['modulePath']))
             ->each(function (string $module) use ($config) {
                 $this->registerModule($module, $config);
@@ -88,6 +92,7 @@ class LivewireComponentServiceProvider extends ServiceProvider
         }
 
         $this->processComponentFiles($directory, $namespace, $aliasPrefix);
+        
         return true;
     }
 

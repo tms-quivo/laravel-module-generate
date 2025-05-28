@@ -1,0 +1,5 @@
+<x-{{ moduleName }}::layouts.master>
+    <h1>Hello World</h1>
+
+    <p>Module: {{ moduleName }}</p>
+</x-{{ moduleName }}::layouts.master>

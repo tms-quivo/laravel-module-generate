@@ -2,15 +2,13 @@
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
 use Illuminate\Foundation\Console\PolicyMakeCommand;
-use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareModelTrait;
 
 class PolicyGeneratorCommand extends PolicyMakeCommand
 {
-    use PrepareCommandTrait;
-    use ContainerCommandTrait;
-    use PrepareModelTrait;
+    use PrepareCommandTrait, PrepareModelTrait;
 
     /**
      * The name and signature of the console command.
@@ -27,12 +25,9 @@ class PolicyGeneratorCommand extends PolicyMakeCommand
     protected $description = 'Generate a new policy class for provided container';
 
     /**
-     * Execute the console command.
+     * The layer of class generated.
+     *
+     * @var string
      */
-    public function handle()
-    {
-        $this->prepareOptions();
-
-        parent::handle();
-    }
+    protected string $layer = ModuleLayer::CONTAINER;
 }

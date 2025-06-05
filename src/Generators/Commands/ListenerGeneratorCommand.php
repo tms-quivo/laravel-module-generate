@@ -3,13 +3,12 @@ namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
 use Illuminate\Foundation\Console\ListenerMakeCommand;
 use Illuminate\Support\Str;
-use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
 class ListenerGeneratorCommand extends ListenerMakeCommand
 {
     use PrepareCommandTrait;
-    use ContainerCommandTrait;
 
     /**
      * The name and signature of the console command.
@@ -26,15 +25,18 @@ class ListenerGeneratorCommand extends ListenerMakeCommand
     protected $description = 'Generate a new listener class for provided container';
 
     /**
-     * Execute the console command.
+     * The layer of class generated.
+     *
+     * @var string
      */
-    public function handle()
-    {
-        $this->prepareOptions();
+    protected string $layer = ModuleLayer::CONTAINER;
 
-        parent::handle();
-    }
-
+    /**
+     * Build the class with the given name.
+     *
+     * @param string $name
+     * @return string
+     */
     protected function buildClass($name)
     {
         $event     = $this->option('event');

@@ -1,30 +1,31 @@
 <?php
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
-use Tomosia\LaravelModuleGenerate\Traits\ComponentParserTrait;
-use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
+use Tomosia\LaravelModuleGenerate\Traits\ComponentParserTrait;
+use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;
+use Tomosia\LaravelModuleGenerate\Traits\PromptsForMissingOptions;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
+#[AsCommand(name: 'module:make-livewire', description: 'Generate a new livewire class for provided module')]
 class LivewireGeneratorCommand extends Command implements PromptsForMissingInput
 {
     use ModuleCommandTrait;
     use ComponentParserTrait;
+    use PromptsForMissingOptions;
 
     /**
-     * The signature of the command.
+     * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'module:make-livewire {name} {--module= : The name of the module} {--force} {--inline} {--view=}';
-
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Generate a new livewire class for provided module';
+    protected $name = 'module:make-livewire';
 
     /**
      * The type of the command.
@@ -34,17 +35,23 @@ class LivewireGeneratorCommand extends Command implements PromptsForMissingInput
     protected $type = 'Livewire';
 
     /**
+     * The layer of class generated.
+     *
+     * @var string
+     */
+    protected string $layer = ModuleLayer::MODULE;
+
+    /**
      * Execute the console command.
      *
-     * @return bool
+     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
-        $this->prepareOptions();
         $this->parser();
 
         if (! $this->validateComponent()) {
-            return false;
+            return SymfonyCommand::FAILURE;
         }
 
         $class = $this->makeClass();
@@ -56,10 +63,40 @@ class LivewireGeneratorCommand extends Command implements PromptsForMissingInput
             $view && $this->line("VIEW: " . $this->getViewSourcePath());
             $class && $this->line("TAG: " . $this->component->class->tag);
 
-            return true;
+            return SymfonyCommand::SUCCESS;
         }
 
-        return false;
+        return SymfonyCommand::FAILURE;
+    }
+
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    public function getArguments(): array
+    {
+        return [
+            ['name', InputArgument::REQUIRED, 'The name of the Livewire component'],
+        ];
+    }
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions(): array
+    {
+        return array_merge(
+            [
+                ['module', null, InputOption::VALUE_REQUIRED, 'The name of the module'],
+                ['force', null, InputOption::VALUE_NONE, 'Force the creation if file already exists'],
+                ['inline', null, InputOption::VALUE_NONE, 'Create the view inline'],
+                ['view', null, InputOption::VALUE_OPTIONAL, 'The name of the view'],
+            ],
+            parent::getOptions(),
+        );
     }
 
     /**

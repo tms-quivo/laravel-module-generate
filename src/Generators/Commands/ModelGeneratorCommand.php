@@ -5,13 +5,12 @@ use Illuminate\Foundation\Console\ModelMakeCommand;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Command\Command;
-use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
 class ModelGeneratorCommand extends ModelMakeCommand
 {
     use PrepareCommandTrait;
-    use ContainerCommandTrait;
 
     /**
      * The name and signature of the console command.
@@ -26,6 +25,13 @@ class ModelGeneratorCommand extends ModelMakeCommand
      * @var string
      */
     protected $description = 'Generate a new model class for provided container';
+
+    /**
+     * The layer of class generated.
+     *
+     * @var string
+     */
+    protected string $layer = ModuleLayer::CONTAINER;
 
     /**
      * The name of the table.
@@ -50,9 +56,7 @@ class ModelGeneratorCommand extends ModelMakeCommand
     public function handle()
     {
         try {
-            $this->prepareOptions();
             $this->prepareModel();
-
             parent::handle();
 
             // Run Pint for code formatting
@@ -99,8 +103,8 @@ class ModelGeneratorCommand extends ModelMakeCommand
     protected function getTableName(): ?string
     {
         return $this->option('table')
-            ? sprintf("    protected \$table = '%s';", $this->option('table'))
-            : null;
+        ? sprintf("    protected \$table = '%s';", $this->option('table'))
+        : null;
     }
 
     /**
@@ -144,6 +148,9 @@ class ModelGeneratorCommand extends ModelMakeCommand
             ->implode("\n");
     }
 
+    /**
+     * Create a controller.
+     */
     protected function createController()
     {
         $controller = Str::of(class_basename($this->argument('name')))
@@ -162,6 +169,9 @@ class ModelGeneratorCommand extends ModelMakeCommand
         ]);
     }
 
+    /**
+     * Create a policy.
+     */
     protected function createPolicy()
     {
         $policy = Str::of(class_basename($this->argument('name')))

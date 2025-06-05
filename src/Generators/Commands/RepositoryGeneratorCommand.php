@@ -2,27 +2,15 @@
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Input\InputOption;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
+#[AsCommand(name: 'module:make-repository', description: 'Generate a new repository class for provided container')]
 class RepositoryGeneratorCommand extends GeneratorCommand
 {
     use PrepareCommandTrait;
-    use ContainerCommandTrait;
-
-    /**
-     * The name of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'module:make-repository {name} {--model= : The model class name} {--container= : The name of the container}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Generate a new repository class for provided container';
 
     /**
      * The type of class being generated.
@@ -32,13 +20,26 @@ class RepositoryGeneratorCommand extends GeneratorCommand
     protected $type = 'Repository';
 
     /**
-     * Execute the console command.
+     * The layer of class generated.
+     *
+     * @var string
      */
-    public function handle()
-    {
-        $this->prepareOptions();
+    protected string $layer = ModuleLayer::CONTAINER;
 
-        parent::handle();
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions(): array
+    {
+        return array_merge(
+            [
+                ['model', null, InputOption::VALUE_OPTIONAL, 'The model class name'],
+                ['container', null, InputOption::VALUE_REQUIRED, 'The name of the container'],
+            ],
+            parent::getOptions(),
+        );
     }
 
     /**

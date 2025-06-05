@@ -21,7 +21,7 @@ trait PrepareModelTrait
         if (Str::startsWith($model, $rootNamespace)) {
             return $model;
         }
-        
+
         return $this->buildModelPath($rootNamespace, $model);
     }
 
@@ -37,7 +37,7 @@ trait PrepareModelTrait
             return $this->rootNamespace();
         }
 
-        return sprintf('%s%s\\Models\\', $this->rootNamespace(), $container);
+        return sprintf('%s%s\\', $this->rootNamespace(), $container);
     }
 
     /**

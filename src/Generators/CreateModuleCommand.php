@@ -3,7 +3,8 @@ namespace Tomosia\LaravelModuleGenerate\Generators;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
-use Illuminate\Support\Facades\File;
+use Illuminate\Filesystem\Filesystem;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 class CreateModuleCommand extends Command implements PromptsForMissingInput
 {
@@ -28,22 +29,43 @@ class CreateModuleCommand extends Command implements PromptsForMissingInput
      */
     protected $type = 'Module';
 
+    /**
+     * The filesystem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected Filesystem $filesystem;
+
+    /**
+     * Create a new command instance.
+     *
+     * @param \Illuminate\Filesystem\Filesystem $filesystem
+     * @return void
+     */
+    public function __construct(Filesystem $filesystem)
+    {
+        parent::__construct();
+
+        $this->filesystem = $filesystem;
+    }
+
+    /**
+     * Execute the console command.
+     */
     public function handle()
     {
         $moduleName = $this->getModuleName();
         $modulePath = $this->getModulePath($moduleName);
+        $namespace = ucfirst(str_replace('/', '\\', $modulePath));
 
         if ($this->moduleExists($modulePath)) {
-            return false;
+            return SymfonyCommand::FAILURE;
         }
 
         $this->createModuleStructure($modulePath);
         $this->createProviders($moduleName);
 
-        $namespace = config('module-generator.module_namespace') . '\\' . $moduleName;
         $this->components->info(sprintf('%s [%s] created successfully.', $this->type, $namespace));
-        
-        return true;
     }
 
     /**
@@ -75,9 +97,9 @@ class CreateModuleCommand extends Command implements PromptsForMissingInput
      */
     protected function moduleExists(string $modulePath): bool
     {
-        if (File::exists($modulePath)) {
+        if ($this->filesystem->exists($modulePath)) {
             $this->components->error("The module \"{$this->getModuleName()}\" already exists.");
-            
+
             return true;
         }
 
@@ -106,13 +128,26 @@ class CreateModuleCommand extends Command implements PromptsForMissingInput
     protected function createScaffoldFolders(string $modulePath): void
     {
         foreach (config('module-generator.m_scaffold_folders', []) as $structure) {
-            File::makeDirectory(
-                $modulePath . '/' . str_replace('\\', '/', $structure),
+            $path = $modulePath . '/' . str_replace('\\', '/', $structure);
+            $this->filesystem->makeDirectory(
+                $path,
                 0755,
                 true,
                 true
             );
+
+            if (config('module-generator.stubs.gitkeep', false)) {
+                $this->generateGitKeep($path);
+            }
         }
+    }
+
+    /**
+     * Generate git keep to the specified path.
+     */
+    public function generateGitKeep(string $path)
+    {
+        $this->filesystem->put($path.'/.gitkeep', '');
     }
 
     /**
@@ -124,10 +159,10 @@ class CreateModuleCommand extends Command implements PromptsForMissingInput
     protected function createViewFile(string $modulePath): void
     {
         $viewPath = $modulePath . '/resources/views/index.blade.php';
-        
-        if (!File::exists($viewPath)) {
-            File::ensureDirectoryExists(dirname($viewPath));
-            File::put($viewPath, '<div>' . PHP_EOL . '</div>' . PHP_EOL);
+
+        if (!$this->filesystem->exists($viewPath)) {
+            $this->filesystem->ensureDirectoryExists(dirname($viewPath));
+            $this->filesystem->put($viewPath, '<div>' . PHP_EOL . '</div>' . PHP_EOL);
         }
     }
 
@@ -143,8 +178,8 @@ class CreateModuleCommand extends Command implements PromptsForMissingInput
         $stubPath = __DIR__ . '/stubs/route.stub';
 
         if (file_exists($stubPath)) {
-            File::ensureDirectoryExists(dirname($routePath));
-            File::put($routePath, File::get($stubPath));
+            $this->filesystem->ensureDirectoryExists(dirname($routePath));
+            $this->filesystem->put($routePath, $this->filesystem->get($stubPath));
         }
     }
 

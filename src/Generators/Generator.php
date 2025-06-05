@@ -4,6 +4,7 @@ namespace Tomosia\LaravelModuleGenerate\Generators;
 use Illuminate\Console\Command;
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 
 abstract class Generator extends Command
 {
@@ -21,6 +22,11 @@ abstract class Generator extends Command
      */
     protected string $type;
 
+    /**
+     * The reserved names that cannot be used.
+     *
+     * @var array
+     */
     protected $reservedNames = [
         '__halt_compiler',
         'abstract',
@@ -151,17 +157,24 @@ abstract class Generator extends Command
      */
     protected function getSnakeType(): string
     {
-        return str($this->type)->snake()->toString();
+        return Str::snake($this->type);
     }
 
     /**
      * Get the config path by type.
      *
      * @return string
+     * @throws \RuntimeException
      */
     protected function getConfigPathByType(): string
     {
-        return config("module-generator.paths.{$this->getSnakeType()}");
+        $path = config("module-generator.namespaces.{$this->getSnakeType()}");
+
+        if (empty($path)) {
+            throw new \RuntimeException("Path configuration for type '{$this->type}' not found");
+        }
+
+        return $path;
     }
 
     /**
@@ -237,9 +250,7 @@ abstract class Generator extends Command
     {
         if (preg_match('/(?P<imports>(?:^use [^;{]+;$\n?)+)/m', $stub, $match)) {
             $imports = explode("\n", trim($match['imports']));
-
             sort($imports);
-
             return str_replace(trim($match['imports']), implode("\n", $imports), $stub);
         }
 
@@ -255,9 +266,9 @@ abstract class Generator extends Command
      */
     public function replaceGeneral(string $stub, ?string $subFolder = null): string
     {
-        $type = $this->getSnakeType();
+        $type       = $this->getSnakeType();
         $pathConfig = $this->getConfigPathByType();
-        $replace = str($pathConfig)->append('\\' . $subFolder)->chopEnd('\\')->toString();
+        $replace    = str($pathConfig)->append('\\' . $subFolder)->chopEnd('\\')->toString();
 
         return str_replace(
             [

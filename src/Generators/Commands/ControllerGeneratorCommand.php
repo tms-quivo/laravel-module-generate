@@ -4,15 +4,13 @@ namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 use function Laravel\Prompts\text;
 use Illuminate\Routing\Console\ControllerMakeCommand;
 use Illuminate\Support\Str;
-use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareModelTrait;
 
 class ControllerGeneratorCommand extends ControllerMakeCommand
 {
-    use PrepareCommandTrait;
-    use ModuleCommandTrait;
-    use PrepareModelTrait;
+    use PrepareCommandTrait, PrepareModelTrait;
 
     private const DEFAULT_NAMESPACE     = 'Illuminate\\Http';
     private const DEFAULT_REQUEST_CLASS = 'Request';
@@ -31,18 +29,30 @@ class ControllerGeneratorCommand extends ControllerMakeCommand
      */
     protected $description = 'Generate a new controller class for provided module';
 
-    public function handle()
-    {
-        $this->prepareOptions();
+    /**
+     * The layer of class generated.
+     *
+     * @var string
+     */
+    protected string $layer = ModuleLayer::MODULE;
 
-        parent::handle();
-    }
-
+    /**
+     * Get the stub file for the generator.
+     *
+     * @return string
+     */
     protected function getStub(): string
     {
         return parent::getStub();
     }
 
+    /**
+     * Build the form request replacements.
+     *
+     * @param array $replace
+     * @param string $modelClass
+     * @return array
+     */
     protected function buildFormRequestReplacements(array $replace, $modelClass)
     {
         $namespace          = self::DEFAULT_NAMESPACE;
@@ -122,6 +132,12 @@ class ControllerGeneratorCommand extends ControllerMakeCommand
         return $namespacedRequests;
     }
 
+    /**
+     * Qualify the model class name.
+     *
+     * @param string $model
+     * @return string
+     */
     protected function qualifyModel(string $model): string
     {
         if (! $this->option('container')) {
@@ -129,7 +145,7 @@ class ControllerGeneratorCommand extends ControllerMakeCommand
         }
 
         $container     = $this->option('container');
-        $rootNamespace = config('module-generator.container_namespace') . '\\' . $container . '\\Models\\';
+        $rootNamespace = config('module-generator.container_namespace') . '\\' . $container . '\\';
         $model         = $this->normalizeModelName($model);
 
         if (Str::startsWith($model, $rootNamespace)) {

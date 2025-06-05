@@ -8,7 +8,7 @@ use stdClass;
 
 trait ComponentParserTrait
 {
-    use CommandHelper;
+    use ModuleCommandTrait;
 
     protected ?stdClass $component = null;
     protected ?string $module = null;
@@ -63,7 +63,7 @@ trait ComponentParserTrait
             'dir'       => $classDir,
             'path'      => $classPath,
             'file'      => "{$classDir}/{$className}.php",
-            'namespace' => $this->getNamespace($classPath),
+            'namespace' => $this->getLivewireNamespace($classPath),
             'name'      => $className,
             'tag'       => $this->getComponentTag(),
         ];

@@ -28,12 +28,13 @@ class LivewireComponentServiceProvider extends ServiceProvider
     protected function registerModuleComponents()
     {
         $config = $this->getModuleConfig();
+        $modulePath = is_dir($config['modulePath']) ? $config['modulePath'] : base_path($config['modulePath']);
 
-        if (! File::isDirectory($config['modulePath'])) {
+        if (! File::isDirectory($modulePath)) {
             return;
         }
 
-        collect(File::directories($config['modulePath']))
+        collect(File::directories($modulePath))
             ->each(function (string $module) use ($config) {
                 $this->registerModule($module, $config);
             });
@@ -92,7 +93,7 @@ class LivewireComponentServiceProvider extends ServiceProvider
         }
 
         $this->processComponentFiles($directory, $namespace, $aliasPrefix);
-        
+
         return true;
     }
 

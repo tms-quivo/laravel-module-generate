@@ -2,13 +2,12 @@
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
 use Illuminate\Foundation\Console\MailMakeCommand;
-use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
 class MailGeneratorCommand extends MailMakeCommand
 {
     use PrepareCommandTrait;
-    use ContainerCommandTrait;
 
     /**
      * The name and signature of the console command.
@@ -32,12 +31,9 @@ class MailGeneratorCommand extends MailMakeCommand
     protected $type = 'Mail';
 
     /**
-     * Execute the console command.
+     * The layer of class generated.
+     *
+     * @var string
      */
-    public function handle()
-    {
-        $this->prepareOptions();
-
-        parent::handle();
-    }
+    protected string $layer = ModuleLayer::CONTAINER;
 }

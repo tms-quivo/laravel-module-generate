@@ -2,13 +2,12 @@
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
 use Illuminate\Foundation\Console\JobMakeCommand;
-use Tomosia\LaravelModuleGenerate\Traits\ContainerCommandTrait;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
 class JobGeneratorCommand extends JobMakeCommand
 {
     use PrepareCommandTrait;
-    use ContainerCommandTrait;
 
     /**
      * The name and signature of the console command.
@@ -25,12 +24,9 @@ class JobGeneratorCommand extends JobMakeCommand
     protected $description = 'Generate a new job class for provided container';
 
     /**
-     * Execute the console command.
+     * The layer of class generated.
+     *
+     * @var string
      */
-    public function handle()
-    {
-        $this->prepareOptions();
-
-        parent::handle();
-    }
+    protected string $layer = ModuleLayer::CONTAINER;
 }

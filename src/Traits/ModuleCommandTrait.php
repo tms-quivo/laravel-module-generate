@@ -1,125 +1,122 @@
 <?php
+
 namespace Tomosia\LaravelModuleGenerate\Traits;
 
-use function Laravel\Prompts\text;
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Input\InputOption;
 
 trait ModuleCommandTrait
 {
-    /**
-     * Prepare options.
+	/**
+     * Get the module name
      *
-     * @return void
+     * @return string|null
      */
-    protected function prepareOptions()
+    protected function getModule(): ?string
     {
-        if (! $this->option('module')) {
-            $this->input->setOption('module', text('Please enter the name of the module', required: true));
-        }
+        return $this->hasOption('module') ? $this->option('module') : null;
     }
 
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions(): array
-    {
-        return array_merge(
-            [
-                ['module', 'mdl', InputOption::VALUE_OPTIONAL, 'The name of the module'],
-                ['container', 'ctn', InputOption::VALUE_OPTIONAL, 'The name of the container'],
-                ['provider', 'mp', InputOption::VALUE_OPTIONAL, 'The options of the module'],
-            ],
-            parent::getOptions(),
-        );
-    }
+	/**
+	 * Get the container name
+	 *
+	 * @return string|null
+	 */
+	protected function getContainer(): ?string
+	{
+		return $this->hasOption('container') ? $this->option('container') : null;
+	}
 
     /**
-     * Get the root namespace for the class.
+     * Get the module lower name
      *
      * @return string
      */
-    protected function rootNamespace(): string
+    protected function getModuleLowerName(): string
     {
-        if (null !== $this->option('module')) {
-            return config('module-generator.module_namespace') . '\\';
-        }
-
-        return parent::rootNamespace();
+        return Str::lower($this->getModule() ?? '');
     }
 
     /**
-     * Get the default namespace for the class.
+     * Get the module namespace
      *
-     * @param string $rootNamespace
      * @return string
      */
-    protected function getDefaultNamespace($rootNamespace): string
+    protected function getModuleNamespace(): string
     {
-        if ($this->option('module') === null) {
-            return parent::getDefaultNamespace($rootNamespace);
-        }
-        $type = str($this->type)->plural()->toString();
+        $module = $this->getModule();
 
-        return sprintf(
-            '%s\\%s\\%s',
-            $rootNamespace,
-            $this->option('module'),
-            getConfigPath($this->type, $type)
-        );
+        return config('module-generator.module_namespace', 'Modules') . '\\' . $module;
     }
 
     /**
-     * Get the namespace for the given name.
+     * Get the module path
      *
      * @return string
      */
-    protected function getClassNamespace(): string
+    protected function getModulePath(): string
     {
-        $type = str($this->type)->plural()->toString();
-        $path = str(getConfigPath($this->type, $type))->append('\\' . $this->getSubNamespace())->chopEnd('\\')->toString();
+        $module = $this->getModule();
 
-        return sprintf(
-            '%s\\%s\\%s',
-            trim($this->rootNamespace(), '\\'),
-            $this->option('module'),
-            $path
-        );
+        return config('module-generator.module_path', base_path('modules')) . '/' . $module;
     }
 
     /**
-     * Get the namespace for the given name.
+     * Get the module livewire namespace
      *
      * @return string
      */
-    protected function getSubNamespace(): string
+    protected function getModuleLivewireNamespace(): string
     {
-        $name = $this->argument('name');
-
-        return ! Str::contains($name, '\\')
-            ? ''
-            : str_replace('\\' . class_basename($name), '', $name);
+        return config('module-generator.livewire.namespace', 'Livewire');
     }
 
     /**
-     * Replace the stub variables for the generator.
+     * Get the namespace for the given class path
      *
-     * @param string $stub
+     * @param string $classPath
      * @return string
      */
-    protected function replaceStub(string $stub): string
+    protected function getLivewireNamespace($classPath): string
     {
-        $replacements = [
-            '{{ module }}' => $this->option('module'),
-            '{{ name }}'   => class_basename($this->argument('name')),
-        ];
+        $classPath = Str::contains($classPath, '/') ? '/'.$classPath : '';
 
-        return str_replace(
-            array_keys($replacements),
-            array_values($replacements),
-            $this->replaceGeneral($stub, $this->getSubNamespace())
-        );
+        $prefix = $this->getModuleNamespace() . '\\' . $this->getModuleLivewireNamespace();
+
+        return (string) Str::of($classPath)
+            ->beforeLast('/')
+            ->prepend($prefix)
+            ->replace(['/'], ['\\']);
+    }
+
+    /**
+     * Get the module livewire view directory
+     *
+     * @return string
+     */
+    protected function getModuleLivewireViewDir(): string
+    {
+        $moduleLivewireViewDir = config('module-generator.livewire.view', 'resources/views/livewire');
+
+        return $this->getModulePath() . '/' . $moduleLivewireViewDir;
+    }
+
+    /**
+     * Check if the force option is set
+     *
+     * @return bool
+     */
+    protected function isForce(): bool
+    {
+        return $this->option('force') === true;
+    }
+
+    /**
+     * Check if the inline option is set
+     *
+     * @return bool
+     */
+    protected function isInline(): bool
+    {
+        return $this->option('inline') === true;
     }
 }

@@ -82,6 +82,11 @@ This command will create a new action file at `App/Containers/User/Actions/Store
 - `module:make-mail` - Generate a new mail in the container
 - `module:make-observer` - Generate a new observer in the container
 
+### Supports
+
+- `module:make-livewire` - Generate a new livewire in the module
+- `module:make-data` - Generate a new data in the container
+
 ## Features
 
 - Quick generation of common Laravel module files
@@ -115,7 +120,8 @@ Modules/
 ```
 
 ```
-App/Containers/User/
+App/Containers
+└── User/
     ├── Actions/
     │   └── ...
     ├── Events/

@@ -2,13 +2,12 @@
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
 use Illuminate\Foundation\Console\ResourceMakeCommand;
-use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
 class ResourceGeneratorCommand extends ResourceMakeCommand
 {
     use PrepareCommandTrait;
-    use ModuleCommandTrait;
 
     /**
      * The name and signature of the console command.
@@ -25,12 +24,9 @@ class ResourceGeneratorCommand extends ResourceMakeCommand
     protected $description = 'Generate a new resource class for provided module';
 
     /**
-     * Execute the console command.
+     * The layer of class generated.
+     *
+     * @var string
      */
-    public function handle()
-    {
-        $this->prepareOptions();
-
-        parent::handle();
-    }
+    protected string $layer = ModuleLayer::MODULE;
 }

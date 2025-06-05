@@ -21,6 +21,7 @@ use Tomosia\LaravelModuleGenerate\Generators\Commands\ResourceGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\Commands\ScopeGeneratorCommand;
 use Tomosia\LaravelModuleGenerate\Generators\CreateContainerCommand;
 use Tomosia\LaravelModuleGenerate\Generators\CreateModuleCommand;
+use Tomosia\LaravelModuleGenerate\Generators\Packages\CreateDataCommand;
 use Tomosia\LaravelModuleGenerate\Providers\LivewireComponentServiceProvider;
 
 class LaravelModuleGenerateProvider extends ServiceProvider
@@ -52,6 +53,7 @@ class LaravelModuleGenerateProvider extends ServiceProvider
         return [
             CreateContainerCommand::class,
             CreateModuleCommand::class,
+            CreateDataCommand::class,
             ControllerGeneratorCommand::class,
             RequestGeneratorCommand::class,
             ResourceGeneratorCommand::class,

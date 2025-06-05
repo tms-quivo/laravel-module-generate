@@ -1,33 +1,65 @@
 <?php
 
 return [
-    'module_path' => base_path('modules'),
-
+	/*
+	|--------------------------------------------------------------------------
+	| Module Layer
+	|--------------------------------------------------------------------------
+	|
+	| The path and namespace of the module layer.
+	|
+	*/
+	'module_path' => 'Modules',
 	'module_namespace' => 'Modules',
 
-	'container_path' => base_path('app/Containers'),
-
+	/*
+	|--------------------------------------------------------------------------
+	| Container Layer
+	|--------------------------------------------------------------------------
+	|
+	| The path and namespace of the container layer.
+	|
+	*/
+	'container_path' => 'app/Containers',
 	'container_namespace' => 'App\Containers',
 
-	'paths' => [
+	/*
+	|--------------------------------------------------------------------------
+	| Namespaces
+	|--------------------------------------------------------------------------
+	|
+	| The namespaces of the module layer.
+	|
+	*/
+	'namespaces' => [
+		'action' => 'Actions',
+		'channel' => 'Channels',
 		'controller' => 'Http\Controllers',
+		'event' => 'Events',
+		'job' => 'Jobs',
+		'mail' => 'Mails',
+		'model' => 'Models',
+		'listener' => 'Listeners',
+		'notification' => 'Notifications',
+		'observer' => 'Observers',
+		'policy' => 'Policies',
+		'provider' => 'Providers',
+		'repository' => 'Repositories',
 		'request' => 'Http\Requests',
 		'resource' => 'Transformers',
 		'resource_collection' => 'Transformers',
-		'model' => 'Models',
-		'action' => 'Actions',
-		'policy' => 'Policies',
-		'observer' => 'Observers',
 		'scope' => 'Scopes',
-		'event' => 'Events',
-		'listener' => 'Listeners',
-		'mail' => 'Mail',
-		'notification' => 'Notifications',
-		'job' => 'Jobs',
-		'repository' => 'Repositories',
-		'provider' => 'Providers',
+		'data' => 'Data',
 	],
 
+	/*
+	|--------------------------------------------------------------------------
+	| Folders
+	|--------------------------------------------------------------------------
+	|
+	| The path and namespace of the module layer.
+	|
+	*/
 	'c_scaffold_folders' => [
 		'Actions',
         'Models',
@@ -48,10 +80,26 @@ return [
 		'routes'
 	],
 
+	/*
+	|--------------------------------------------------------------------------
+	| Stubs
+	|--------------------------------------------------------------------------
+	|
+	| The stubs for the module generator.
+	|
+	*/
 	'stubs' => [
-		'gitkeep' => true,
+		'gitkeep' => false,
 	],
 
+	/*
+	|--------------------------------------------------------------------------
+	| Livewire
+	|--------------------------------------------------------------------------
+	|
+	| The path and namespace of the livewire layer.
+	|
+	*/
 	'livewire' => [
 		'namespace' => 'Livewire',
 

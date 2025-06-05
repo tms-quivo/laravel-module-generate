@@ -3,8 +3,9 @@ namespace Tomosia\LaravelModuleGenerate\Generators;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
-use Illuminate\Support\Facades\File;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 class CreateContainerCommand extends Command implements PromptsForMissingInput
 {
@@ -29,21 +30,41 @@ class CreateContainerCommand extends Command implements PromptsForMissingInput
      */
     protected $type = 'Container';
 
+    /**
+     * The filesystem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected Filesystem $filesystem;
+
+    /**
+     * Create a new command instance.
+     *
+     * @param \Illuminate\Filesystem\Filesystem $filesystem
+     * @return void
+     */
+    public function __construct(Filesystem $filesystem)
+    {
+        parent::__construct();
+
+        $this->filesystem = $filesystem;
+    }
+
+    /**
+     * Execute the console command.
+     */
     public function handle()
     {
         $containerName = $this->getContainerName();
         $containerPath = $this->getContainerPath($containerName);
 
         if ($this->containerExists($containerPath)) {
-            return false;
+            return SymfonyCommand::FAILURE;
         }
 
         $this->createContainerStructure($containerPath);
 
-        $namespace = config('module-generator.container_namespace') . '\\' . $containerName;
-        $this->components->info(sprintf('%s [%s] created successfully.', $this->type, $namespace));
-
-        return true;
+        $this->components->info(sprintf('%s [%s] created successfully.', $this->type, ucfirst(str_replace('/', '\\', $containerPath))));
     }
 
     /**
@@ -69,9 +90,9 @@ class CreateContainerCommand extends Command implements PromptsForMissingInput
      */
     protected function containerExists(string $containerPath): bool
     {
-        if (File::exists($containerPath)) {
+        if ($this->filesystem->exists($containerPath)) {
             $this->components->error("The container \"{$this->getContainerName()}\" already exists.");
-            
+
             return true;
         }
 
@@ -81,12 +102,25 @@ class CreateContainerCommand extends Command implements PromptsForMissingInput
     /**
      * Create the container directory structure.
      */
-    protected function createContainerStructure(string $path): void
+    protected function createContainerStructure(string $containerPath): void
     {
         $folders = config('module-generator.c_scaffold_folders', []);
 
         foreach ($folders as $structure) {
-            File::makeDirectory($path . '/' . str_replace('\\', '/', $structure), 0755, true, true);
+            $path = $containerPath . '/' . str_replace('\\', '/', $structure);
+            $this->filesystem->makeDirectory($path, 0755, true, true);
+
+            if (config('module-generator.stubs.gitkeep', false)) {
+                $this->generateGitKeep($path);
+            }
         }
+    }
+
+    /**
+     * Generate git keep to the specified path.
+     */
+    public function generateGitKeep(string $path)
+    {
+        $this->filesystem->put($path.'/.gitkeep', '');
     }
 }

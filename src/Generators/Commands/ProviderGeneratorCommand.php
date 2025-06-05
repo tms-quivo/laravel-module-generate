@@ -2,13 +2,12 @@
 namespace Tomosia\LaravelModuleGenerate\Generators\Commands;
 
 use Illuminate\Foundation\Console\ProviderMakeCommand;
-use Tomosia\LaravelModuleGenerate\Traits\ModuleCommandTrait;
+use Tomosia\LaravelModuleGenerate\Constants\ModuleLayer;
 use Tomosia\LaravelModuleGenerate\Traits\PrepareCommandTrait;
 
 class ProviderGeneratorCommand extends ProviderMakeCommand
 {
     use PrepareCommandTrait;
-    use ModuleCommandTrait;
 
     /**
      * The name and signature of the console command.
@@ -22,18 +21,20 @@ class ProviderGeneratorCommand extends ProviderMakeCommand
      *
      * @var string
      */
-    protected $description = 'Generate a new provider class for provided container';
+    protected $description = 'Generate a new provider class for provided module';
 
     /**
-     * Execute the console command.
+     * The layer of class generated.
+     *
+     * @var string
      */
-    public function handle()
-    {
-        $this->prepareOptions();
+    protected string $layer = ModuleLayer::MODULE;
 
-        parent::handle();
-    }
-
+    /**
+     * Get the stub file for the generator.
+     *
+     * @return string
+     */
     protected function getStub()
     {
         $name = match ($this->option('provider')) {
@@ -52,6 +53,12 @@ class ProviderGeneratorCommand extends ProviderMakeCommand
         return parent::getStub();
     }
 
+    /**
+     * Build the class with the given name.
+     *
+     * @param  string  $name
+     * @return string
+     */
     protected function buildClass($name)
     {
         $stub = parent::buildClass($name);

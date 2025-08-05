@@ -62,7 +62,7 @@ trait ComponentParserTrait
         return (object) [
             'dir'       => $classDir,
             'path'      => $classPath,
-            'file'      => "{$classDir}/{$className}.php",
+            'file'      => "{$classDir}/{$classPath}.php",
             'namespace' => $this->getLivewireNamespace($classPath),
             'name'      => $className,
             'tag'       => $this->getComponentTag(),
@@ -242,7 +242,7 @@ trait ComponentParserTrait
      */
     protected function checkClassNameValid()
     {
-        return $this->isClassNameValid($this->argument('name'));
+        return $this->isClassNameValid($this->component->class->name);
     }
 
     /**
@@ -252,7 +252,7 @@ trait ComponentParserTrait
      */
     protected function checkReservedClassName()
     {
-        return $this->isReservedClassName($this->argument('name'));
+        return $this->isReservedClassName($this->component->class->name);
     }
 
     /**
